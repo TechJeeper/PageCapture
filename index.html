@@ -11,19 +11,11 @@
             font-family: 'Inter', sans-serif;
         }
         /* Custom scrollbar for a cleaner look */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #2d3748;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4a5568;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #718096;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a202c; }
+        ::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #718096; }
+        
         /* Custom styles for range inputs */
         input[type=range] {
             -webkit-appearance: none;
@@ -31,45 +23,36 @@
             cursor: pointer;
             width: 100%;
         }
-        input[type=range]:focus {
-            outline: none;
-        }
-        /* Thumb */
+        input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background: #4299e1;
-            margin-top: -5px;
-            transition: background .2s;
+            height: 16px; width: 16px; border-radius: 50%;
+            background: #4299e1; margin-top: -5px; transition: background .2s;
         }
         input[type=range]::-moz-range-thumb {
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background: #4299e1;
-            border: none;
-            transition: background .2s;
+            height: 16px; width: 16px; border-radius: 50%;
+            background: #4299e1; border: none; transition: background .2s;
         }
-        input[type=range]:hover::-webkit-slider-thumb {
-            background: #63b3ed;
-        }
-        input[type=range]:hover::-moz-range-thumb {
-            background: #63b3ed;
-        }
-        /* Track */
+        input[type=range]:hover::-webkit-slider-thumb { background: #63b3ed; }
+        input[type=range]:hover::-moz-range-thumb { background: #63b3ed; }
         input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            background: #2d3748;
-            border-radius: 3px;
+            width: 100%; height: 6px; background: #2d3748; border-radius: 3px;
         }
         input[type=range]::-moz-range-track {
-            width: 100%;
-            height: 6px;
-            background: #2d3748;
-            border-radius: 3px;
+            width: 100%; height: 6px; background: #2d3748; border-radius: 3px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-bg:after {
+            content: '';
+            @apply absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-5 w-5 transition shadow-sm;
+        }
+        input:checked + .toggle-bg:after {
+            transform: translateX(100%);
+            @apply border-white;
+        }
+        input:checked + .toggle-bg {
+            @apply bg-blue-600 border-blue-600;
         }
     </style>
 </head>
@@ -79,53 +62,102 @@
         <!-- Header -->
         <div class="text-center">
             <h1 class="text-3xl md:text-4xl font-bold text-white">Website Scroller Video Generator</h1>
-            <p class="text-gray-400 mt-2">Enter a URL to generate a scrolling video of the website.</p>
+            <p class="text-gray-400 mt-2">Create a scrolling video of any website.</p>
         </div>
 
-        <!-- Important Note -->
-        <div class="bg-yellow-900/50 border border-yellow-700 text-yellow-300 px-4 py-3 rounded-lg relative" role="alert">
-            <strong class="font-bold">Important:</strong>
-            <span class="block sm:inline ml-1">Most major websites (like Google, Facebook, etc.) cannot be loaded due to security restrictions. This tool works best with your own websites or sites that explicitly allow embedding.</span>
-        </div>
-
-        <!-- Controls -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Left Column: Settings -->
-            <div class="md:col-span-1 bg-gray-700/50 p-6 rounded-xl space-y-6">
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left Column: Controls -->
+            <div class="lg:col-span-1 bg-gray-700/50 p-6 rounded-xl space-y-6 flex flex-col">
                 <div>
-                    <label for="urlInput" class="block text-sm font-medium text-gray-300 mb-2">Website URL</label>
-                    <div class="flex">
-                        <input type="url" id="urlInput" class="flex-grow bg-gray-800 border border-gray-600 rounded-l-md p-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="https://example.com" value="https://example.com">
-                        <button id="loadUrlBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 rounded-r-md transition">Load</button>
+                    <label for="urlInput" class="block text-sm font-medium text-gray-300 mb-2">Step 1: Enter Website URL</label>
+                    <input type="url" id="urlInput" class="w-full bg-gray-800 border border-gray-600 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="https://example.com">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Step 2: Choose Recording Method</label>
+                    <div class="flex items-center justify-center bg-gray-800 p-2 rounded-lg">
+                        <span id="manualLabel" class="font-semibold text-white px-3">Manual Mode</span>
+                        <label for="modeToggle" class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" id="modeToggle" class="sr-only">
+                                <div class="toggle-bg block bg-gray-600 w-11 h-6 rounded-full"></div>
+                            </div>
+                        </label>
+                        <span id="previewLabel" class="text-gray-400 px-3">Preview Mode</span>
                     </div>
                 </div>
-                <div>
-                    <label for="scrollSpeed" class="block text-sm font-medium text-gray-300 mb-2">Scroll Speed: <span id="scrollSpeedValue" class="font-bold">5</span></label>
-                    <input type="range" id="scrollSpeed" min="1" max="20" value="5" class="w-full">
+
+                <div id="settings-panel" class="space-y-6">
+                    <div>
+                        <label for="scrollSpeed" class="block text-sm font-medium text-gray-300 mb-2">Scroll Speed: <span id="scrollSpeedValue" class="font-bold">5</span></label>
+                        <input type="range" id="scrollSpeed" min="1" max="20" value="5" class="w-full">
+                    </div>
+                    <div>
+                        <label for="duration" class="block text-sm font-medium text-gray-300 mb-2">Video Duration (seconds): <span id="durationValue" class="font-bold">10</span>s</label>
+                        <input type="range" id="duration" min="1" max="60" value="10" class="w-full">
+                    </div>
                 </div>
-                <div>
-                    <label for="duration" class="block text-sm font-medium text-gray-300 mb-2">Video Duration (seconds): <span id="durationValue" class="font-bold">10</span>s</label>
-                    <input type="range" id="duration" min="1" max="60" value="10" class="w-full">
-                </div>
-                 <div class="flex flex-col space-y-3 pt-4">
-                    <button id="startRecordingBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105 shadow-lg disabled:bg-gray-500 disabled:cursor-not-allowed disabled:scale-100">
+
+                <div class="flex-grow"></div> <!-- Spacer -->
+
+                <div class="flex flex-col space-y-3 pt-4">
+                    <button id="startRecordingBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105 shadow-lg disabled:bg-gray-500 disabled:cursor-not-allowed disabled:scale-100">
                         Start Recording
                     </button>
-                    <button id="stopRecordingBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition hidden shadow-lg">
+                    <button id="stopRecordingBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition hidden shadow-lg">
                         Stop Recording
                     </button>
                 </div>
-                 <p id="status" class="text-sm text-center text-gray-400 h-5"></p>
+                 <p id="status" class="text-sm text-center text-gray-400 h-5 mt-2"></p>
             </div>
 
-            <!-- Right Column: Preview -->
-            <div class="md:col-span-2 bg-gray-900 rounded-xl overflow-hidden shadow-inner min-h-[400px] md:min-h-[600px] flex items-center justify-center border-2 border-gray-700">
-                <iframe id="websiteIframe" class="w-full h-full border-0" title="Website Preview"></iframe>
-                 <div id="iframeBlocker" class="absolute inset-0 bg-transparent hidden"></div>
+            <!-- Right Column: Instructions / Preview -->
+            <div id="display-area" class="lg:col-span-2 bg-gray-900 rounded-xl shadow-inner min-h-[400px] lg:min-h-[600px] flex items-center justify-center border-2 border-gray-700 p-6">
+                
+                <!-- Manual Mode Instructions -->
+                <div id="manual-instructions">
+                    <div class="text-center">
+                         <h2 class="text-2xl font-bold text-white mb-4">Manual Mode Instructions (Recommended)</h2>
+                         <p class="text-gray-400 mb-6">This method works for ANY website (Google, Facebook, etc.).</p>
+                         <ol class="text-left space-y-4 max-w-md mx-auto">
+                            <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">1</span>
+                                <span>Open your target website in a <strong class="text-blue-400">new browser tab</strong>. You can click here: <a id="manualUrlLink" href="#" target="_blank" class="text-blue-400 hover:underline break-all">Open Website</a></span>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">2</span>
+                                <span>Come back to this page and click <strong class="text-green-400">Start Recording</strong>.</span>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">3</span>
+                                <span>When your browser asks, choose to share the <strong class="text-blue-400">new tab</strong> you just opened.</span>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="bg-blue-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">4</span>
+                                <span>Switch to that tab and <strong class="text-blue-400">scroll manually</strong>. The recording will stop automatically after the duration you set.</span>
+                            </li>
+                         </ol>
+                    </div>
+                </div>
+
+                <!-- Preview Mode Area -->
+                <div id="preview-area" class="w-full h-full hidden flex-col">
+                    <div class="bg-yellow-900/50 border border-yellow-700 text-yellow-300 px-4 py-2 rounded-lg mb-4 text-sm">
+                        <strong>Note:</strong> Most major websites will appear blank here due to security rules. If the site is blank, please switch to <strong class="font-bold">Manual Mode</strong>.
+                    </div>
+                    <button id="loadUrlBtn" class="w-full mb-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition">Load URL in Preview</button>
+                    <div class="w-full h-full bg-black rounded-lg overflow-hidden relative">
+                       <iframe id="websiteIframe" class="w-full h-full border-0" title="Website Preview"></iframe>
+                       <div id="iframeBlocker" class="absolute inset-0 bg-transparent hidden"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
          <!-- Download Area -->
-        <div id="downloadArea" class="hidden text-center pt-4">
+        <div id="downloadArea" class="hidden text-center pt-6">
             <h3 class="text-xl font-semibold mb-2">Your Video is Ready!</h3>
             <a id="downloadLink" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition transform hover:scale-105" download="website-scroll.webm">Download Video</a>
         </div>
@@ -146,6 +178,13 @@
         const status = document.getElementById('status');
         const downloadArea = document.getElementById('downloadArea');
         const downloadLink = document.getElementById('downloadLink');
+        const modeToggle = document.getElementById('modeToggle');
+        const manualInstructions = document.getElementById('manual-instructions');
+        const previewArea = document.getElementById('preview-area');
+        const settingsPanel = document.getElementById('settings-panel');
+        const manualLabel = document.getElementById('manualLabel');
+        const previewLabel = document.getElementById('previewLabel');
+        const manualUrlLink = document.getElementById('manualUrlLink');
 
         // State variables
         let mediaRecorder;
@@ -153,71 +192,63 @@
         let stream;
         let scrollInterval;
         let recordingTimeout;
+        let isPreviewMode = false;
 
         // --- Event Listeners ---
-
-        // Load URL button
+        
+        urlInput.addEventListener('input', updateManualLink);
+        
+        modeToggle.addEventListener('change', () => {
+            isPreviewMode = modeToggle.checked;
+            updateUIMode();
+        });
+        
         loadUrlBtn.addEventListener('click', () => {
-            let url = urlInput.value.trim();
-            if (!url) {
-                updateStatus('Please enter a URL.', 'error');
-                return;
-            }
-            if (!url.startsWith('http')) {
-                url = `https://${url}`;
-                urlInput.value = url;
-            }
+            let url = getValidUrl();
+            if (!url) return;
+
             websiteIframe.src = url;
             downloadArea.classList.add('hidden');
-            updateStatus('Loading website...', 'info');
-            websiteIframe.onload = () => updateStatus('Website loaded successfully.', 'success');
-            websiteIframe.onerror = () => updateStatus('Failed to load website due to security policy.', 'error');
+            updateStatus('Loading preview...', 'info');
+            websiteIframe.onload = () => updateStatus('Preview loaded. Ready to record.', 'success');
+            websiteIframe.onerror = () => updateStatus('Preview failed to load (security policy).', 'error');
         });
 
-        // Sliders to update text values
         scrollSpeedInput.addEventListener('input', (e) => scrollSpeedValue.textContent = e.target.value);
         durationInput.addEventListener('input', (e) => durationValue.textContent = e.target.value);
 
-        // Start Recording button
-        startRecordingBtn.addEventListener('click', async () => {
-            if (!websiteIframe.src || websiteIframe.src === 'about:blank') {
-                updateStatus('Please load a website first.', 'error');
-                return;
-            }
-            await startRecording();
-        });
-
-        // Stop Recording button
+        startRecordingBtn.addEventListener('click', startRecording);
         stopRecordingBtn.addEventListener('click', stopRecording);
         
         // --- Core Functions ---
 
         async function startRecording() {
+            if (isPreviewMode && (!websiteIframe.src || websiteIframe.src === 'about:blank')) {
+                updateStatus('Please load a URL in the preview first.', 'error');
+                return;
+            }
+
             try {
-                // Get a media stream of the user's display
                 stream = await navigator.mediaDevices.getDisplayMedia({
-                    video: { mediaSource: "screen" }
+                    video: { mediaSource: "screen" },
+                    audio: false // We don't need audio
                 });
 
-                // Set up MediaRecorder
                 recordedChunks = [];
                 mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
                 mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
+                    if (event.data.size > 0) recordedChunks.push(event.data);
                 };
                 mediaRecorder.onstop = handleRecordingStop;
 
-                // Start recording
                 mediaRecorder.start();
                 updateStatus('Recording...', 'info');
                 toggleRecordingUI(true);
 
-                // Start automated scrolling
-                startScrolling();
+                if (isPreviewMode) {
+                    startScrolling();
+                }
                 
-                // Set a timeout to automatically stop recording
                 const duration = parseInt(durationInput.value, 10) * 1000;
                 recordingTimeout = setTimeout(stopRecording, duration);
 
@@ -232,19 +263,20 @@
             if (mediaRecorder && mediaRecorder.state === 'recording') {
                 mediaRecorder.stop();
             }
-            // Stop all tracks on the stream to end the screen share
-            stream.getTracks().forEach(track => track.stop());
-            stopScrolling();
+            if(stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            if (isPreviewMode) {
+                stopScrolling();
+            }
             clearTimeout(recordingTimeout);
         }
 
         function handleRecordingStop() {
             updateStatus('Processing video...', 'info');
-            // Create a blob from the recorded chunks
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             const url = URL.createObjectURL(blob);
             
-            // Set up download link
             downloadLink.href = url;
             downloadLink.download = `scroll-capture-${new Date().toISOString()}.webm`;
             downloadArea.classList.remove('hidden');
@@ -254,22 +286,18 @@
         }
 
         function startScrolling() {
-            // Block mouse events on the iframe to prevent interference
             iframeBlocker.classList.remove('hidden');
             const scrollSpeed = parseInt(scrollSpeedInput.value, 10);
             
             scrollInterval = setInterval(() => {
                 try {
-                    // This will only work for same-origin iframes.
-                    // For cross-origin, it will throw an error.
                     websiteIframe.contentWindow.scrollBy(0, scrollSpeed);
                 } catch (error) {
-                    // Handle security error for cross-origin iframes
                     stopScrolling();
                     updateStatus('Auto-scroll failed. Please scroll manually.', 'warning');
-                    console.warn("Cross-origin frame scrolling is blocked by the browser's security policy.");
+                    console.warn("Cross-origin frame scrolling is blocked.");
                 }
-            }, 50); // Scroll every 50ms
+            }, 50);
         }
         
         function stopScrolling() {
@@ -278,36 +306,81 @@
         }
 
         // --- UI Helper Functions ---
+        
+        function getValidUrl() {
+            let url = urlInput.value.trim();
+             if (!url) {
+                updateStatus('Please enter a URL.', 'error');
+                return null;
+            }
+            if (!url.startsWith('http')) {
+                url = `https://${url}`;
+                urlInput.value = url;
+            }
+            return url;
+        }
+
+        function updateManualLink() {
+            const url = getValidUrl();
+            if(url) {
+                manualUrlLink.href = url;
+                manualUrlLink.textContent = url;
+            } else {
+                manualUrlLink.href = "#";
+                manualUrlLink.textContent = "Open Website";
+            }
+        }
+
+        function updateUIMode() {
+            if (isPreviewMode) {
+                // Preview Mode
+                manualInstructions.classList.add('hidden');
+                previewArea.classList.remove('hidden');
+                previewArea.classList.add('flex');
+                settingsPanel.style.opacity = '1';
+                settingsPanel.style.pointerEvents = 'auto';
+                manualLabel.classList.remove('text-white', 'font-semibold');
+                manualLabel.classList.add('text-gray-400');
+                previewLabel.classList.add('text-white', 'font-semibold');
+                previewLabel.classList.remove('text-gray-400');
+            } else {
+                // Manual Mode
+                manualInstructions.classList.remove('hidden');
+                previewArea.classList.add('hidden');
+                previewArea.classList.remove('flex');
+                settingsPanel.style.opacity = '0.5';
+                settingsPanel.style.pointerEvents = 'none';
+                manualLabel.classList.add('text-white', 'font-semibold');
+                manualLabel.classList.remove('text-gray-400');
+                previewLabel.classList.remove('text-white', 'font-semibold');
+                previewLabel.classList.add('text-gray-400');
+            }
+        }
 
         function toggleRecordingUI(isRecording) {
             startRecordingBtn.disabled = isRecording;
             startRecordingBtn.classList.toggle('hidden', isRecording);
             stopRecordingBtn.classList.toggle('hidden', !isRecording);
-            // Disable controls during recording
-            [urlInput, loadUrlBtn, scrollSpeedInput, durationInput].forEach(el => el.disabled = isRecording);
+            [urlInput, modeToggle].forEach(el => el.disabled = isRecording);
+            if(isPreviewMode) loadUrlBtn.disabled = isRecording;
         }
 
         function updateStatus(message, type = 'info') {
             status.textContent = message;
             status.classList.remove('text-red-400', 'text-green-400', 'text-yellow-400', 'text-gray-400');
-            switch (type) {
-                case 'error':
-                    status.classList.add('text-red-400');
-                    break;
-                case 'success':
-                    status.classList.add('text-green-400');
-                    break;
-                case 'warning':
-                    status.classList.add('text-yellow-400');
-                    break;
-                default:
-                    status.classList.add('text-gray-400');
-            }
+            const colorClass = {
+                error: 'text-red-400',
+                success: 'text-green-400',
+                warning: 'text-yellow-400',
+            }[type] || 'text-gray-400';
+            status.classList.add(colorClass);
         }
         
-        // Initial load
-        loadUrlBtn.click();
+        // Initial setup
+        updateUIMode();
+        updateManualLink();
     </script>
 </body>
 </html>
+
 
